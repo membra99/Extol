@@ -117,22 +117,23 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown-btn">
+                    <li class="nav-item">@Html.ActionLinkIcon("Categories", "AllCategories", "Dashboard", "fa fa-table-list", null, new { @class = "side-anchor" })</li>
+@*                     <li class="nav-item dropdown-btn">
                         <span class="side-anchor">
-                            <i class="fa fa-table-list icon-spacing fa-menu "></i>
+                            <i class="fa fa-table-list icon-spacing fa-menu"></i>
                             <span class="nav-item-title">Categories</span>
                             <i class="fa fa-chevron-down mt-1"></i>
                         </span>
                         <ul class="navbar-nav dropdown-container">
                             <li>
-                                @*TODO Promeniti lang da ide iz sesije*@
+                                @*TODO Promeniti lang da ide iz sesije
                                 @Html.ActionLink("Category Tree", "AllCategories", "Dashboard", null, new { @class = "side-anchor" })
                                 @Html.ActionLink("Attributes", "AllAttributes", "Dashboard", null, new { @class = "side-anchor" })
                             </li>
                         </ul>
-                    </li>
-                    <li class="nav-item">@Html.ActionLinkIcon("Declarations", "AllDeclaration", "Dashboard", "fa-solid fa-certificate fa-menu icon-spacing", null, new { @class = "side-anchor" })</li>
-                    <li class="nav-item dropdown-btn">
+                    </li> *@
+                    @* <li class="nav-item">@Html.ActionLinkIcon("Declarations", "AllDeclaration", "Dashboard", "fa-solid fa-certificate fa-menu icon-spacing", null, new { @class = "side-anchor" })</li> *@
+                    @* <li class="nav-item dropdown-btn">
                         <span class="side-anchor">
                             <i class="fa fa-solid fa-blog icon-spacing"></i>
                             <span class="nav-item-title">Blogs</span>
@@ -144,14 +145,14 @@
                                 @Html.ActionLink("All Tags", "AllTags", "Dashboard", null, new { @class = "side-anchor" })
                             </li>
                         </ul>
-                    </li>
+                    </li> *@
                     <li class="nav-item">@Html.ActionLinkIcon("Newsletters", "SendNewsLetter", "Dashboard", "fa-envelope", null, new { @class = "side-anchor" })</li>
-                    <li class="nav-item">@Html.ActionLinkIcon("Pages", "AllSiteContent", "Dashboard", "fa-newspaper fa-menu", new { type = "Page", langid = 1 }, new { @class = "side-anchor" })</li>
+                    @* <li class="nav-item">@Html.ActionLinkIcon("Pages", "AllSiteContent", "Dashboard", "fa-newspaper fa-menu", new { type = "Page", langid = 1 }, new { @class = "side-anchor" })</li> *@
                     <li class="nav-item">@Html.ActionLinkIcon("Orders", "AllOrders", "Dashboard", "fa-box-open fa-menu", null, new { @class = "side-anchor" })</li>
                     <li class="nav-item">@Html.ActionLinkIcon("Promo codes", "PromoCodes", "Dashboard", "fa-solid fa-receipt", null, new { @class = "side-anchor" })</li>
                     <li class="nav-item">@Html.ActionLinkIcon("Invoice", "AllInvoices", "Dashboard", "fa-solid fa-file-pdf fa-menu", null, new { @class = "side-anchor" })</li>
                     <li class="nav-item">@Html.ActionLinkIcon("Import", "ImportExc", "Dashboard", "fa-solid fa-file-import fa-menu", null, new { @class = "side-anchor" })</li>
-                    <li class="nav-item">@Html.ActionLinkIcon("Charts", "GetCharts", "Dashboard", "fa-solid fa-chart-line", null, new { @class = "side-anchor" })</li>
+                    @* <li class="nav-item">@Html.ActionLinkIcon("Charts", "GetCharts", "Dashboard", "fa-solid fa-chart-line", null, new { @class = "side-anchor" })</li> *@
                 </ul>
             </div>
 
