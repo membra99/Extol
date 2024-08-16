@@ -32,6 +32,9 @@ namespace Entities.Context
 		public DbSet<Language> Languages { get; set; }
         public DbSet<Newsletter> Newsletters { get; set; }
         public DbSet<PromoCodes> PromoCodes { get; set; }
+		public DbSet<Materials> Materials { get; set; }
+		public DbSet<Profiles> Profiles { get; set; }
+		public DbSet<Types> Types { get; set; }
 
         #endregion MainDataDataSET
 
@@ -234,6 +237,38 @@ namespace Entities.Context
             modelBuilder.Entity<Newsletter>(entity =>
             {
                 entity.HasKey(x => x.NewsletterId);
+            });
+			modelBuilder.Entity<Materials>(entity =>
+			{
+				entity.HasKey(x => x.MaterialId);
+			});
+			modelBuilder.Entity<Profiles>(entity =>
+			{
+				entity.HasKey(entity => entity.ProfileId);
+
+				entity.HasOne(x => x.Category)
+				.WithMany(x => x.Profiles)
+				.OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(x => x.Media)
+				.WithMany(x => x.Profiles)
+				.OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(x => x.Material)
+				.WithMany(x => x.Profiles)
+				.OnDelete(DeleteBehavior.Restrict);
+            });
+			modelBuilder.Entity<Types>(entity =>
+			{
+				entity.HasKey(x => x.TypeId);
+
+				entity.HasOne(x => x.Profile)
+				.WithMany(x => x.Types)
+				.OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(x => x.Media)
+				.WithMany(x => x.Types)
+				.OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

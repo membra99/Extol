@@ -4,6 +4,7 @@ using Entities.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20240816070003_ProfilesMIG")]
+    partial class ProfilesMIG
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -648,29 +651,6 @@ namespace Entities.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("Entities.Universal.MainData.Types", b =>
-                {
-                    b.Property<int>("TypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TypeId"));
-
-                    b.Property<int>("MediaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProfileId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TypeId");
-
-                    b.HasIndex("MediaId");
-
-                    b.HasIndex("ProfileId");
-
-                    b.ToTable("Types");
-                });
-
             modelBuilder.Entity("Entities.Universal.MainData.Users", b =>
                 {
                     b.Property<int>("UsersId")
@@ -990,25 +970,6 @@ namespace Entities.Migrations
                     b.Navigation("Media");
                 });
 
-            modelBuilder.Entity("Entities.Universal.MainData.Types", b =>
-                {
-                    b.HasOne("Entities.Universal.MainData.Media", "Media")
-                        .WithMany("Types")
-                        .HasForeignKey("MediaId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Entities.Universal.MainData.Profiles", "Profile")
-                        .WithMany("Types")
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Media");
-
-                    b.Navigation("Profile");
-                });
-
             modelBuilder.Entity("Entities.Universal.MainData.Users", b =>
                 {
                     b.HasOne("Entities.Universal.MainData.Media", "Media")
@@ -1070,8 +1031,6 @@ namespace Entities.Migrations
 
                     b.Navigation("Tags");
 
-                    b.Navigation("Types");
-
                     b.Navigation("Users");
                 });
 
@@ -1094,11 +1053,6 @@ namespace Entities.Migrations
                     b.Navigation("ProductAttributes");
 
                     b.Navigation("Sales");
-                });
-
-            modelBuilder.Entity("Entities.Universal.MainData.Profiles", b =>
-                {
-                    b.Navigation("Types");
                 });
 
             modelBuilder.Entity("Entities.Universal.MainData.SaleType", b =>

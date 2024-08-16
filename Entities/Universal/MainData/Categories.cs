@@ -22,5 +22,6 @@ namespace Entities.Universal.MainData
 		public Language? Languages { get; set; }
 		public ICollection<Attributes> Attributes { get; set; }
 		public ICollection<Product> Products { get; set; }
-	}
+        public ICollection<Profiles>? Profiles { get; set; }
+    }
 }
