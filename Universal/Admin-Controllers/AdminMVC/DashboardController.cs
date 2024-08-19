@@ -148,7 +148,7 @@ namespace Universal.Admin_Controllers.AdminMVC
         public async Task<IActionResult> GetImage(string path)
         {
             if (path == null)
-                path = "Universal/noimage_202402021126392851.jpg";
+                path = "Extol/noimage_202408160845063673.jpg";
 
             var picture = await _AWSS3FileService.GetFile(path);
             byte[] bytes = null;
@@ -174,7 +174,7 @@ namespace Universal.Admin_Controllers.AdminMVC
 
         public async Task<IActionResult> DownloadExcelTemplate()
         {
-            var picture = await _AWSS3FileService.GetFile("Universal/ExcelTemplate.xlsx");
+            var picture = await _AWSS3FileService.GetFile("Extol/ExcelTemplate.xlsx");
             byte[] bytes = null;
             using (MemoryStream ms = new MemoryStream())
             {

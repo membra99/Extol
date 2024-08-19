@@ -144,7 +144,7 @@ namespace Services.AWS
 				var deleteRequest = new DeleteObjectRequest
 				{
 					BucketName = _settings.AWSS3.BucketName,
-					Key = "Universal/" + key
+					Key = "Extol/" + key
 				};
 				DeleteObjectResponse response = await _amazonS3.DeleteObjectAsync(deleteRequest);
 				if (response.HttpStatusCode == System.Net.HttpStatusCode.NoContent)
@@ -234,7 +234,7 @@ namespace Services.AWS
 					var newKey = item.Substring(index + 1);
 					KeyVersion keyVersion = new KeyVersion
 					{
-						Key = "Universal/" + newKey,
+						Key = "Extol/" + newKey,
 						// For non-versioned bucket operations, we only need object key.
 					};
 					keysProper.Add(keyVersion);

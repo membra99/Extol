@@ -1227,7 +1227,7 @@ namespace Services
         public async Task<List<MediaODTO>> GetAllImagesRoute()
         {
             string[] ext = { "png", "jpg", "webp", "jiff" };
-            return await _context.Medias.Where(x => ext.Contains(x.Extension) && x.Src != "Universal/noimage@202402021126392851.jpg").Select(x => _mapper.Map<MediaODTO>(x)).ToListAsync();
+            return await _context.Medias.Where(x => ext.Contains(x.Extension) && x.Src != "Extol/noimage@202402021126392851.jpg").Select(x => _mapper.Map<MediaODTO>(x)).ToListAsync();
         }
 
         public async Task<List<MediaODTO>> GetAllVideoRoute()
