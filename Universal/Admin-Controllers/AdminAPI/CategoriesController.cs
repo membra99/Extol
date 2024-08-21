@@ -31,6 +31,17 @@ namespace Universal.Admin_Controllers.AdminAPI
 			return categories;
 		}
 
+		[HttpGet("AllCategories")]
+		public async Task<ActionResult<IEnumerable<CategoriesODTO>>> GetAllCategories()
+		{
+			var categories = await _mainDataServices.GetAllCategories();
+			if (categories == null)
+			{
+				return NotFound();
+			}
+			return categories;
+		}
+
 		//PUT: api/Categories
 		[HttpPut]
 		public async Task<ActionResult<CategoriesODTO>> PutCategories(CategoriesIDTO categoriesIDTO)

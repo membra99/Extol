@@ -34,7 +34,13 @@ namespace Entities.Context
         public DbSet<PromoCodes> PromoCodes { get; set; }
 		public DbSet<Materials> Materials { get; set; }
 		public DbSet<Profiles> Profiles { get; set; }
-		public DbSet<Types> Types { get; set; }
+		public DbSet<Brand> Brands { get; set; }
+		public DbSet<CategoryType> CategoryTypes { get; set; }
+		public DbSet<DoorHandle> DoorHandles { get; set; }
+		public DbSet<MaterialColor> MaterialColors { get; set; }
+		public DbSet<OpeningStyle> OpeningStyles { get; set; }
+		public DbSet<Glazing> Glazings { get; set; }
+
 
         #endregion MainDataDataSET
 
@@ -250,7 +256,11 @@ namespace Entities.Context
 				.WithMany(x => x.Profiles)
 				.OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(x => x.Media)
+				entity.HasOne(x => x.Brand)
+				.WithMany(x => x.Profiles)
+				.OnDelete(DeleteBehavior.Restrict);
+
+				entity.HasOne(x => x.Media)
 				.WithMany(x => x.Profiles)
 				.OnDelete(DeleteBehavior.Restrict);
 
@@ -258,17 +268,61 @@ namespace Entities.Context
 				.WithMany(x => x.Profiles)
 				.OnDelete(DeleteBehavior.Restrict);
             });
-			modelBuilder.Entity<Types>(entity =>
+			modelBuilder.Entity<Brand>(entity =>
 			{
-				entity.HasKey(x => x.TypeId);
+				entity.HasKey(x => x.BrandId);
+			});
+			modelBuilder.Entity<CategoryType>(entity =>
+			{
+				entity.HasKey(x => x.CategoryTypeId);
 
-				entity.HasOne(x => x.Profile)
-				.WithMany(x => x.Types)
-				.OnDelete(DeleteBehavior.Restrict);
+				entity.HasOne(x => x.Category)
+			   .WithMany(x => x.CategoryTypes)
+			   .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(x => x.Media)
-				.WithMany(x => x.Types)
-				.OnDelete(DeleteBehavior.Restrict);
+               .WithMany(x => x.CategoryTypes)
+               .OnDelete(DeleteBehavior.Restrict);
+            });
+			modelBuilder.Entity<DoorHandle>(entity =>
+			{
+				entity.HasKey(x => x.DoorHandleId);
+
+				entity.HasOne(x => x.Material)
+			   .WithMany(x => x.DoorHandles)
+			   .OnDelete(DeleteBehavior.Restrict);
+
+				entity.HasOne(x => x.Media)
+			   .WithMany(x => x.DoorHandles)
+			   .OnDelete(DeleteBehavior.Restrict);
+			});
+			modelBuilder.Entity<MaterialColor>(entity =>
+			{
+				entity.HasKey(x => x.MaterialColorId);
+
+				entity.HasOne(x => x.Material)
+			   .WithMany(x => x.MaterialColors)
+			   .OnDelete(DeleteBehavior.Restrict);
+			});
+			modelBuilder.Entity<OpeningStyle>(entity =>
+			{
+				entity.HasKey(x => x.OpeningStyleId);
+
+				entity.HasOne(x => x.CategoryType)
+			   .WithMany(x => x.OpeningStyles)
+			   .OnDelete(DeleteBehavior.Restrict);
+
+				entity.HasOne(x => x.Media)
+			   .WithMany(x => x.OpeningStyles)
+			   .OnDelete(DeleteBehavior.Restrict);
+			});
+            modelBuilder.Entity<Glazing>(entity =>
+            {
+                entity.HasKey(x => x.GlazingId);
+
+                entity.HasOne(x => x.Media)
+               .WithMany(x => x.Glazings)
+               .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

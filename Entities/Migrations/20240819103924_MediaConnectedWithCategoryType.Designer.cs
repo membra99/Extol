@@ -4,6 +4,7 @@ using Entities.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20240819103924_MediaConnectedWithCategoryType")]
+    partial class MediaConnectedWithCategoryType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -191,33 +194,6 @@ namespace Entities.Migrations
                     b.HasIndex("MediaId");
 
                     b.ToTable("DoorHandles");
-                });
-
-            modelBuilder.Entity("Entities.Universal.MainData.Glazing", b =>
-                {
-                    b.Property<int>("GlazingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GlazingId"));
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("GlazingName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LayerNum")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MediaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GlazingId");
-
-                    b.HasIndex("MediaId");
-
-                    b.ToTable("Glazings");
                 });
 
             modelBuilder.Entity("Entities.Universal.MainData.Invoice", b =>
@@ -569,9 +545,6 @@ namespace Entities.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Chambers")
                         .HasColumnType("int");
 
                     b.Property<int>("MaterialId")
@@ -937,16 +910,6 @@ namespace Entities.Migrations
                     b.Navigation("Media");
                 });
 
-            modelBuilder.Entity("Entities.Universal.MainData.Glazing", b =>
-                {
-                    b.HasOne("Entities.Universal.MainData.Media", "Media")
-                        .WithMany("Glazings")
-                        .HasForeignKey("MediaId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Media");
-                });
-
             modelBuilder.Entity("Entities.Universal.MainData.Invoice", b =>
                 {
                     b.HasOne("Entities.Universal.MainData.Media", "Media")
@@ -1273,8 +1236,6 @@ namespace Entities.Migrations
                     b.Navigation("CategoryTypes");
 
                     b.Navigation("DoorHandles");
-
-                    b.Navigation("Glazings");
 
                     b.Navigation("Invoices");
 

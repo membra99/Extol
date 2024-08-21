@@ -90,7 +90,28 @@ namespace Entities.Mapping
 			CreateMap<PromoCodes, PromoCodesIDTO>()
 			.ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate.ToString("yyyy-MM-dd")))
 			.ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate.ToString("yyyy-MM-dd")));
+
 			CreateMap<PromoCodesIDTO, PromoCodes>();
+
+			CreateMap<CategoryType, CategoryTypesODTO>()
+				.ForMember(dest => dest.mediaSRC, source => source.MapFrom(m => m.Media.Src));
+
+			CreateMap<OpeningStyle, OpeningStyleODTO>()
+                .ForMember(dest => dest.mediaSRC, source => source.MapFrom(m => m.Media.Src));
+
+            CreateMap<DoorHandle, DoorHandleODTO>()
+                .ForMember(dest => dest.mediaSRC, source => source.MapFrom(m => m.Media.Src));
+
+            CreateMap<Glazing, GlazingODTO>()
+                .ForMember(dest => dest.mediaSRC, source => source.MapFrom(m => m.Media.Src));
+
+            CreateMap<MaterialColor, MaterialColorODTO>();
+
+            CreateMap<Profiles, ProfilesODTO>()
+				.ForMember(dest => dest.MaterialName, source => source.MapFrom(m => m.Material.MaterialName))
+				.ForMember(dest => dest.BrandName, source => source.MapFrom(m => m.Brand.BrandName))
+				.ForMember(dest => dest.mediaSRC, source => source.MapFrom(m => m.Media.Src));
+
         }
 	}
 }

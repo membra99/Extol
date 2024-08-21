@@ -4,6 +4,7 @@ using Entities.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20240819054356_BrandsAndRemoveTypes")]
+    partial class BrandsAndRemoveTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,32 +102,6 @@ namespace Entities.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Entities.Universal.MainData.CategoryType", b =>
-                {
-                    b.Property<int>("CategoryTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryTypeId"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MediaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CategoryTypeId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("MediaId");
-
-                    b.ToTable("CategoryTypes");
-                });
-
             modelBuilder.Entity("Entities.Universal.MainData.Declaration", b =>
                 {
                     b.Property<int>("DeclarationId")
@@ -165,59 +142,6 @@ namespace Entities.Migrations
                     b.HasIndex("LanguageID");
 
                     b.ToTable("Declarations");
-                });
-
-            modelBuilder.Entity("Entities.Universal.MainData.DoorHandle", b =>
-                {
-                    b.Property<int>("DoorHandleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DoorHandleId"));
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MaterialId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MediaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DoorHandleId");
-
-                    b.HasIndex("MaterialId");
-
-                    b.HasIndex("MediaId");
-
-                    b.ToTable("DoorHandles");
-                });
-
-            modelBuilder.Entity("Entities.Universal.MainData.Glazing", b =>
-                {
-                    b.Property<int>("GlazingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GlazingId"));
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("GlazingName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LayerNum")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MediaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GlazingId");
-
-                    b.HasIndex("MediaId");
-
-                    b.ToTable("Glazings");
                 });
 
             modelBuilder.Entity("Entities.Universal.MainData.Invoice", b =>
@@ -265,33 +189,6 @@ namespace Entities.Migrations
                     b.HasKey("LanguageID");
 
                     b.ToTable("Languages");
-                });
-
-            modelBuilder.Entity("Entities.Universal.MainData.MaterialColor", b =>
-                {
-                    b.Property<int>("MaterialColorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaterialColorId"));
-
-                    b.Property<bool>("IsSpecial")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MaterialId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MaterialColorId");
-
-                    b.HasIndex("MaterialId");
-
-                    b.ToTable("MaterialColors");
                 });
 
             modelBuilder.Entity("Entities.Universal.MainData.Materials", b =>
@@ -381,32 +278,6 @@ namespace Entities.Migrations
                     b.HasKey("NewsletterId");
 
                     b.ToTable("Newsletters");
-                });
-
-            modelBuilder.Entity("Entities.Universal.MainData.OpeningStyle", b =>
-                {
-                    b.Property<int>("OpeningStyleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OpeningStyleId"));
-
-                    b.Property<int>("CategoryTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MediaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OpeningStyleId");
-
-                    b.HasIndex("CategoryTypeId");
-
-                    b.HasIndex("MediaId");
-
-                    b.ToTable("OpeningStyles");
                 });
 
             modelBuilder.Entity("Entities.Universal.MainData.Order", b =>
@@ -571,13 +442,10 @@ namespace Entities.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Chambers")
-                        .HasColumnType("int");
-
                     b.Property<int>("MaterialId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MediaId")
+                    b.Property<int>("MediaId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProfileName")
@@ -891,24 +759,6 @@ namespace Entities.Migrations
                     b.Navigation("Seo");
                 });
 
-            modelBuilder.Entity("Entities.Universal.MainData.CategoryType", b =>
-                {
-                    b.HasOne("Entities.Universal.MainData.Categories", "Category")
-                        .WithMany("CategoryTypes")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Entities.Universal.MainData.Media", "Media")
-                        .WithMany("CategoryTypes")
-                        .HasForeignKey("MediaId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Media");
-                });
-
             modelBuilder.Entity("Entities.Universal.MainData.Declaration", b =>
                 {
                     b.HasOne("Entities.Universal.MainData.Language", "Language")
@@ -919,34 +769,6 @@ namespace Entities.Migrations
                     b.Navigation("Language");
                 });
 
-            modelBuilder.Entity("Entities.Universal.MainData.DoorHandle", b =>
-                {
-                    b.HasOne("Entities.Universal.MainData.Materials", "Material")
-                        .WithMany("DoorHandles")
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Entities.Universal.MainData.Media", "Media")
-                        .WithMany("DoorHandles")
-                        .HasForeignKey("MediaId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Material");
-
-                    b.Navigation("Media");
-                });
-
-            modelBuilder.Entity("Entities.Universal.MainData.Glazing", b =>
-                {
-                    b.HasOne("Entities.Universal.MainData.Media", "Media")
-                        .WithMany("Glazings")
-                        .HasForeignKey("MediaId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Media");
-                });
-
             modelBuilder.Entity("Entities.Universal.MainData.Invoice", b =>
                 {
                     b.HasOne("Entities.Universal.MainData.Media", "Media")
@@ -955,17 +777,6 @@ namespace Entities.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Media");
-                });
-
-            modelBuilder.Entity("Entities.Universal.MainData.MaterialColor", b =>
-                {
-                    b.HasOne("Entities.Universal.MainData.Materials", "Material")
-                        .WithMany("MaterialColors")
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Material");
                 });
 
             modelBuilder.Entity("Entities.Universal.MainData.Media", b =>
@@ -984,24 +795,6 @@ namespace Entities.Migrations
                     b.Navigation("MediaType");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Entities.Universal.MainData.OpeningStyle", b =>
-                {
-                    b.HasOne("Entities.Universal.MainData.CategoryType", "CategoryType")
-                        .WithMany("OpeningStyles")
-                        .HasForeignKey("CategoryTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Entities.Universal.MainData.Media", "Media")
-                        .WithMany("OpeningStyles")
-                        .HasForeignKey("MediaId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("CategoryType");
-
-                    b.Navigation("Media");
                 });
 
             modelBuilder.Entity("Entities.Universal.MainData.Order", b =>
@@ -1106,7 +899,8 @@ namespace Entities.Migrations
                     b.HasOne("Entities.Universal.MainData.Media", "Media")
                         .WithMany("Profiles")
                         .HasForeignKey("MediaId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Brand");
 
@@ -1225,16 +1019,9 @@ namespace Entities.Migrations
                 {
                     b.Navigation("Attributes");
 
-                    b.Navigation("CategoryTypes");
-
                     b.Navigation("Products");
 
                     b.Navigation("Profiles");
-                });
-
-            modelBuilder.Entity("Entities.Universal.MainData.CategoryType", b =>
-                {
-                    b.Navigation("OpeningStyles");
                 });
 
             modelBuilder.Entity("Entities.Universal.MainData.Declaration", b =>
@@ -1259,10 +1046,6 @@ namespace Entities.Migrations
 
             modelBuilder.Entity("Entities.Universal.MainData.Materials", b =>
                 {
-                    b.Navigation("DoorHandles");
-
-                    b.Navigation("MaterialColors");
-
                     b.Navigation("Profiles");
                 });
 
@@ -1270,15 +1053,7 @@ namespace Entities.Migrations
                 {
                     b.Navigation("Categories");
 
-                    b.Navigation("CategoryTypes");
-
-                    b.Navigation("DoorHandles");
-
-                    b.Navigation("Glazings");
-
                     b.Navigation("Invoices");
-
-                    b.Navigation("OpeningStyles");
 
                     b.Navigation("Profiles");
 

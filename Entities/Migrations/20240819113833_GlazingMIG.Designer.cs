@@ -4,6 +4,7 @@ using Entities.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20240819113833_GlazingMIG")]
+    partial class GlazingMIG
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -210,7 +213,7 @@ namespace Entities.Migrations
                     b.Property<int>("LayerNum")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MediaId")
+                    b.Property<int>("MediaId")
                         .HasColumnType("int");
 
                     b.HasKey("GlazingId");
@@ -942,7 +945,8 @@ namespace Entities.Migrations
                     b.HasOne("Entities.Universal.MainData.Media", "Media")
                         .WithMany("Glazings")
                         .HasForeignKey("MediaId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Media");
                 });

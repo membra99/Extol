@@ -10,9 +10,10 @@ namespace Entities.Universal.MainData
     public class Materials
     {
         public int MaterialId { get; set; }
-        public string MaterialName { get; set; }
-        public double MaterialPrice { get; set; }
+        public string? MaterialName { get; set; }
 
         public ICollection<Profiles>? Profiles { get; set; }
+        public ICollection<DoorHandle>? DoorHandles { get; set; }
+        public ICollection<MaterialColor>? MaterialColors { get; set; }
     }
 }

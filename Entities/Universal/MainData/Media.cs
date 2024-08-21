@@ -26,6 +26,9 @@ namespace Entities.Universal.MainData
         public ICollection<SiteContent> SiteContents { get; set; }
         public ICollection<Invoice> Invoices { get; set; }
         public ICollection<Profiles>? Profiles { get; set; }
-        public ICollection<Types> Types { get; set; }
+        public ICollection<DoorHandle>? DoorHandles { get; set; }
+        public ICollection<OpeningStyle>? OpeningStyles { get; set; }
+        public ICollection<CategoryType>? CategoryTypes { get; set; }
+        public ICollection<Glazing>? Glazings { get; set; }
     }
 }

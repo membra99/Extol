@@ -252,7 +252,13 @@ namespace Services
             return await _context.Categories.Include(x => x.Media).Include(x => x.Seo).Where(x => x.CategoryId == id).Select(x => _mapper.Map<CategoriesODTO>(x)).SingleOrDefaultAsync();
         }
 
-        public async Task<CategoriesODTO> AddCategory(CategoriesIDTO categoriesIDTO)
+        public async Task<List<CategoriesODTO>> GetAllCategories()
+        {
+            return await _context.Categories.Include(x => x.Media).Include(x => x.Seo).Select(x => _mapper.Map<CategoriesODTO>(x)).ToListAsync();
+		}
+
+
+		public async Task<CategoriesODTO> AddCategory(CategoriesIDTO categoriesIDTO)
         {
             if (!_context.Categories.Any(x => x.CategoryName == categoriesIDTO.CategoryName && x.ParentCategoryId == categoriesIDTO.ParentCategoryId))
             {
@@ -1699,6 +1705,44 @@ namespace Services
 
             return retval;
         }
+        #endregion
+
+        #region Extol services
+
+
+        public async Task<List<ProfilesODTO>> GetProfilesByCategoryId(int categoryId)
+        {
+            return await _context.Profiles.Include(x => x.Brand).Include(x => x.Media).Include(x => x.Material).Where(x => x.CategoryId == categoryId).Select(x => _mapper.Map<ProfilesODTO>(x)).ToListAsync();
+        }
+
+        public async Task<List<CategoryTypesODTO>> GetAllCategoryTypesByCategoryId(int categoryId)
+        {
+            return await _context.CategoryTypes.Include(x => x.Media).Where(x => x.CategoryId == categoryId).Select(x => _mapper.Map<CategoryTypesODTO>(x)).ToListAsync();
+        }
+
+        public async Task<ConfiguratorODTO> GetConfiguratorParams(int categoryId, int categoryTypeId, int materialId, int profileId)
+        {
+            ConfiguratorODTO configuratorODTO = new ConfiguratorODTO();
+            configuratorODTO.ProfilesODTOs = await GetProfilesByCategoryId(categoryId);
+            configuratorODTO.CategoryTypesODTOs = await GetAllCategoryTypesByCategoryId(categoryId);
+            configuratorODTO.OpeningStyleODTOs = await _context.OpeningStyles.Include(x => x.Media).Where(x => x.CategoryTypeId == categoryTypeId).Select(x => _mapper.Map<OpeningStyleODTO>(x)).ToListAsync();
+            configuratorODTO.MaterialColorODTOs = await _context.MaterialColors.Where(x => x.MaterialId == materialId).Select(x => _mapper.Map<MaterialColorODTO>(x)).ToListAsync();
+            configuratorODTO.DoorHandleODTOs = await _context.DoorHandles.Include(x => x.Media).Where(x => x.MaterialId == materialId).Select(x => _mapper.Map<DoorHandleODTO>(x)).ToListAsync();
+
+            var profile = await _context.Profiles.Where(x => x.ProfileId == profileId).SingleOrDefaultAsync();
+            if(profile.Chambers == 6 || profile.MaterialId == 1)
+            {
+                configuratorODTO.GlazingODTOs = await _context.Glazings.Include(x => x.Media).Select(x => _mapper.Map<GlazingODTO>(x)).ToListAsync();
+            }
+            else
+            {
+                configuratorODTO.GlazingODTOs = await _context.Glazings.Include(x => x.Media).Where(x => x.LayerNum != 3).Select(x => _mapper.Map<GlazingODTO>(x)).ToListAsync();
+            }
+
+            return configuratorODTO;
+            
+        }
+
         #endregion
     }
 }

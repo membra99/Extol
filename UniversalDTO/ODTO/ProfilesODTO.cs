@@ -4,22 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Universal.MainData
+namespace Universal.DTO.ODTO
 {
-    public class Profiles
+    public class ProfilesODTO
     {
         public int ProfileId { get; set; }
         public int CategoryId { get; set; }
         public string? ProfileName { get; set; }
         public int? MediaId { get; set; }
+        public string? mediaSRC { get; set; }
         public int MaterialId { get; set; }
+        public string? MaterialName { get; set; }
         public int BrandId { get; set; }
-        public int? Chambers { get; set; }
-
-
-        public Brand? Brand { get; set; }
-		public Categories? Category { get; set; }
-        public Media? Media { get; set; }
-        public Materials? Material { get; set; }
+        public string? BrandName { get; set; }
     }
 }

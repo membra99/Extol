@@ -23,5 +23,6 @@ namespace Entities.Universal.MainData
 		public ICollection<Attributes> Attributes { get; set; }
 		public ICollection<Product> Products { get; set; }
         public ICollection<Profiles>? Profiles { get; set; }
+        public ICollection<CategoryType>? CategoryTypes { get; set; }
     }
 }
