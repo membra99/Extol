@@ -17,5 +17,12 @@ namespace Universal.DTO.ODTO
         public string? MaterialName { get; set; }
         public int BrandId { get; set; }
         public string? BrandName { get; set; }
+        public string? Price { get; set; } = "HardCoded";
+    }
+
+    public class ProfilesAndProductsODTO
+    {
+        public List<ProfilesODTO>? Profiles { get; set; }
+        public List<FeaturedProducts>? FeaturedProducts { get; set; }
     }
 }

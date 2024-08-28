@@ -1,9 +1,11 @@
-﻿using AutoMapper;
+﻿using Amazon.S3.Model;
+using AutoMapper;
 using Entities.Context;
 using Entities.Universal.MainData;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Index.HPRtree;
 using OfficeOpenXml;
 using Services.AWS;
 using Services.Helpers;
@@ -1428,7 +1430,7 @@ namespace Services
         public async Task<TagODTO> AddTag(TagIDTO tagIDTO)
         {
             tagIDTO.LanguageID = 1; //TODO - Set LanguageID dinamicaly
-            var tag = _mapper.Map<Tag>(tagIDTO);
+            var tag = _mapper.Map<Entities.Universal.MainData.Tag>(tagIDTO);
             tag.TagId = 0;
             _context.Tags.Add(tag);
             await SaveContextChangesAsync();
@@ -1443,7 +1445,7 @@ namespace Services
 
         public async Task<TagODTO> EditTag(TagIDTO tagIDTO)
         {
-            var tag = _mapper.Map<Tag>(tagIDTO);
+            var tag = _mapper.Map<Entities.Universal.MainData.Tag>(tagIDTO);
             if (tagIDTO.IsImageChanged == "true")
                 tagIDTO.MediaId = null;
 
@@ -1740,7 +1742,227 @@ namespace Services
             }
 
             return configuratorODTO;
-            
+        }
+
+        public async Task<ProfilesAndProductsODTO> FilterProduct(int categoryId, int? materialId)
+        {
+            ProfilesAndProductsODTO profilesAndProducts = new();
+            profilesAndProducts.Profiles = await _context.Profiles.Include(x => x.Media).Include(x => x.Material).Include(x => x.Brand).Where(x => x.CategoryId == categoryId && (materialId == null || x.MaterialId == materialId)).Select(x => _mapper.Map<ProfilesODTO>(x)).ToListAsync();
+            if(profilesAndProducts.Profiles.Count() == 0)
+            {
+                profilesAndProducts.FeaturedProducts = await _context.Categories.Include(x => x.Media).Where(x => x.ParentCategoryId == categoryId).Select(x => _mapper.Map<FeaturedProducts>(x)).ToListAsync();
+            }
+            return profilesAndProducts;
+        }
+
+        public async Task<List<ProductPageODTO>> GetProductPageCategory()
+        {
+            List<ProductPageODTO> retval = new();
+            var materials = await _context.Materials.Select(x => _mapper.Map<MaterialODTO>(x)).ToListAsync();
+            var categories = await _context.Categories.Where(x => x.ParentCategoryId != null && x.ParentCategoryId == 1).ToListAsync();
+            foreach (var item in categories)
+            {
+                ProductPageODTO productPageODTO = new ProductPageODTO();
+                var checkChild = await _context.Categories.Where(x => x.ParentCategoryId == item.CategoryId).ToListAsync();
+                if(checkChild.Count() == 0)
+                {
+                    productPageODTO.MaterialODTO = materials;
+                    productPageODTO.CategoryName = item.CategoryName;
+                    productPageODTO.CategoryId = item.CategoryId;
+                    retval.Add(productPageODTO);
+                }
+                else if(item.CategoryId != 12 && item.CategoryId != 19)
+                {
+                    productPageODTO.ChildCategoryODTOs = new();
+                    productPageODTO.CategoryId = item.CategoryId;
+                    productPageODTO.CategoryName = item.CategoryName;
+                    foreach (var item1 in checkChild)
+                    {
+                        productPageODTO.ChildCategoryODTOs.Add(new ChildCategoryODTO
+                        {
+                            CategoryId = item1.CategoryId,
+                            CategoryName = item1.CategoryName
+                        });
+                    }
+                    retval.Add(productPageODTO);
+                }
+                else
+                {
+                    productPageODTO.CategoryId = item.CategoryId;
+                    productPageODTO.CategoryName = item.CategoryName;
+                    retval.Add(productPageODTO);
+                }
+            }
+            return retval;
+        }
+
+        public async Task<HomePageDataODTO> GetDataForHomePage()
+        {
+            HomePageDataODTO retval = new();
+            retval.BannerImages = new List<string>() { "Extol/banner2.jpg", "Extol/EXTOL-sigurnosna-vrata.jpg" };
+            var mainCategories = await _context.Categories.Include(x => x.Media).Where(x => x.ParentCategoryId == 1).Select(x => _mapper.Map<CategoriesODTO>(x)).ToListAsync();
+            foreach (var item in mainCategories)
+            {
+                retval.FeaturedCategories.Add(new FeaturedCategories
+                {
+                    CategoryId = item.CategoryId,
+                    Title = item.CategoryName,
+                    MinPrice = "HardCoded",
+                    ImageSrc = item.MediaSrc
+                });
+            }
+
+            List<int> popularniprofili = new List<int>() { 9,10,11,12,13,14}; //Napraviti kroz dash popularne proizvode;
+            var popularProducts = await _context.Profiles.Include(x => x.Media).Where(x => popularniprofili.Contains(x.ProfileId)).Select(x => _mapper.Map<ProfilesODTO>(x)).ToListAsync();
+            foreach (var item in popularProducts)
+            {
+                retval.FeaturedProducts.Add(new FeaturedProducts
+                {
+                    CategoryId = item.CategoryId,
+                    Title = item.ProfileName,
+                    Price = "HardCoded",
+                    ImageSrc = item.mediaSRC
+                });
+            }
+            return retval;
+        }
+
+        public async Task<PromotionODTO> GetPromotion()
+        {
+            //napraviti dinamicko getovanje i ubacivanje promocija kroz dash.
+            PromotionODTO retval = new();
+            retval.Title = "SNIZENJE i do 50%";
+            retval.Period = "vazi do 15.10.2024";
+            return retval;
+        }
+
+        public async Task<List<ProductsListODTO>> GetProductTrees()
+        {
+
+            List<ProductsListODTO> result = new();
+            var materials = await _context.Materials.ToListAsync();
+            var categories = await _context.Categories.Where(x => x.ParentCategoryId == 1).ToListAsync();
+           
+            foreach (var item in categories)
+            {
+                ProductsListODTO retretret = new();
+                retretret.ProductName = item.CategoryName;
+                retretret.categoryId = item.CategoryId;
+
+                MainCategoryODTO retval = new();
+
+                switch (item.CategoryId)
+                {
+                    case 2:
+                        retval.Materials = new();
+                        retval.Materials = materials.Select(x => x.MaterialName.ToLower()).ToList();
+                        retval.CategoryDetailsODTOs = new();
+                        var pvc = await _context.Profiles.Include(x => x.Brand).Include(x => x.Media).Where(x => x.MaterialId == 2 && x.CategoryId == item.CategoryId).Select(x => _mapper.Map<ProfilesODTO>(x)).ToListAsync();
+                        foreach (var item1 in pvc)
+                        {
+                            retval.CategoryDetailsODTOs.PVC.Add(new ProfilesByMaterialODTO
+                            {
+                                ProductName = item1.BrandName + " " + item1.ProfileName,
+                                Image = item1.mediaSRC
+                            });
+                        }
+
+                        var aluminium = await _context.Profiles.Include(x => x.Brand).Include(x => x.Media).Where(x => x.MaterialId == 1 && x.CategoryId == item.CategoryId).Select(x => _mapper.Map<ProfilesODTO>(x)).ToListAsync();
+                        foreach (var item2 in aluminium)
+                        {
+                            retval.CategoryDetailsODTOs.ALUMINIUM.Add(new ProfilesByMaterialODTO
+                            {
+                                ProductName = item2.BrandName + " " + item2.ProfileName,
+                                Image = item2.mediaSRC
+                            });
+                        }
+
+                        var alupvc = await _context.Profiles.Include(x => x.Brand).Include(x => x.Media).Where(x => x.MaterialId == 3 && x.CategoryId == item.CategoryId).Select(x => _mapper.Map<ProfilesODTO>(x)).ToListAsync();
+                        foreach (var item3 in alupvc)
+                        {
+                            retval.CategoryDetailsODTOs.ALUPVC.Add(new ProfilesByMaterialODTO
+                            {
+                                ProductName = item3.BrandName + " " + item3.ProfileName,
+                                Image = item3.mediaSRC
+                            });
+                        }
+                        break;
+
+                    case 3:
+                        retval.MaterialByCategoryODTOs = new();
+                        List<string> frontdoorImages = new() { "Extol/vrata4.png", "Extol/vrata6.png", "Extol/vrata5.png" };
+                        for (int i = 0; i < materials.Count(); i++)
+                        {
+                            retval.MaterialByCategoryODTOs.Add(new MaterialODTO
+                            {
+                                MaterialId = materials[i].MaterialId,
+                                MaterialName = materials[i].MaterialName,
+                                Image = frontdoorImages[i]
+                            });
+                        }
+                        break;
+
+
+                    case 7:
+                        retval.MaterialByCategoryODTOs = new();
+                        List<string> entrancedoorImages = new() { "Extol/vrata1.png", "Extol/vrata3.png", "Extol/vrata2.png" };
+                        for (int i = 0; i < materials.Count(); i++)
+                        {
+                            retval.MaterialByCategoryODTOs.Add(new MaterialODTO
+                            {
+                                MaterialId = materials[i].MaterialId,
+                                MaterialName = materials[i].MaterialName,
+                                Image = entrancedoorImages[i]
+                            });
+                        }
+                        break;
+
+                    case 8:
+                        var slidingsubCategory = await _context.Categories.Where(x => x.ParentCategoryId == 8).ToListAsync();
+                        List<string> slidingdoorImages = new() { "Extol/sliding_doors_1.jpg", "Extol/liftandside.jpg", "Extol/harmonika.jpg" };
+                        for (int i = 0; i < 3; i++)
+                        {
+                            retval.MaterialByCategoryODTOs.Add(new MaterialODTO
+                            {
+                                MaterialId = slidingsubCategory[i].CategoryId,
+                                MaterialName = slidingsubCategory[i].CategoryName,
+                                Image = slidingdoorImages[i]
+                            });
+                        }
+                        break;
+
+                    case 12:
+                        var sunprotectionCategory = await _context.Categories.Where(x => x.ParentCategoryId == 12).ToListAsync();
+                        List<string> sunprotectionImages = new() { "Extol/ROLETNA.png", "Extol/ZALUZINE.jpg", "Extol/VENECIJANERI.jpg","Extol/SCREEN ROLO.jpg", "Extol/ZEBRA.jpg", "Extol/TRAKASTA ZAVESA.jpg" };
+                        for (int i = 0; i < 6; i++)
+                        {
+                            retval.MaterialByCategoryODTOs.Add(new MaterialODTO
+                            {
+                                MaterialId = sunprotectionCategory[i].CategoryId,
+                                MaterialName = sunprotectionCategory[i].CategoryName,
+                                Image = sunprotectionImages[i]
+                            });
+                        }
+                        break;
+
+                    case 19:
+                        var insectprotectionCategory = await _context.Categories.Where(x => x.ParentCategoryId == 19).ToListAsync();
+                        List<string> insectprotectionImages = new() { "Extol/FIXNI KOMARNIK.jpg", "Extol/ROLO KOMARNIK.jpg", "NULL", "Extol/PLISE KOMARNIK.jpg", "NULL", "Extol/VRATA KOMARNIK.jpg" };
+                        for (int i = 0; i < 6; i++)
+                        {
+                            retval.MaterialByCategoryODTOs.Add(new MaterialODTO
+                            {
+                                MaterialId = insectprotectionCategory[i].CategoryId,
+                                MaterialName = insectprotectionCategory[i].CategoryName,
+                                Image = insectprotectionImages[i]
+                            });
+                        }
+                        break;
+                }
+                retretret.MainCategoryODTOs.Add(retval);
+                result.Add(retretret);
+            }
+            return result;
         }
 
         #endregion

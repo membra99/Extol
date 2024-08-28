@@ -49,5 +49,61 @@ namespace Universal.Admin_Controllers.AdminAPI
             }
             return categoryTypes;
         }
+
+        [HttpGet("Promotion")]
+        public async Task<ActionResult<PromotionODTO>> GetPromotions()
+        {
+            var promotion = await _mainDataServices.GetPromotion();
+            if (promotion == null)
+            {
+                return NotFound();
+            }
+            return promotion;
+        }
+
+        [HttpGet("ProductPageCategory")]
+        public async Task<ActionResult<IEnumerable<ProductPageODTO>>> GetProductPageCategories()
+        {
+            var ProductPage = await _mainDataServices.GetProductPageCategory();
+            if (ProductPage == null)
+            {
+                return NotFound();
+            }
+            return ProductPage;
+        }
+
+        [HttpGet("FilterProducts")]
+        public async Task<ActionResult<ProfilesAndProductsODTO>> FilterProducts(int categoryId, int? materialId)
+        {
+            var FilterProduct = await _mainDataServices.FilterProduct(categoryId,materialId);
+            if (FilterProduct == null)
+            {
+                return NotFound();
+            }
+            return FilterProduct;
+        }
+
+        [HttpGet("HomePage")]
+        public async Task<ActionResult<HomePageDataODTO>> GetHomePageData()
+        {
+            var homepage = await _mainDataServices.GetDataForHomePage();
+            if (homepage == null)
+            {
+                return NotFound();
+            }
+            return homepage;
+        }
+
+        [HttpGet("ProductTree")]
+        public async Task<ActionResult<IEnumerable<ProductsListODTO>>> GetProductTree()
+        {
+            var homepage = await _mainDataServices.GetProductTrees();
+            if (homepage == null)
+            {
+                return NotFound();
+            }
+            return homepage;
+        }
+
     }
 }
