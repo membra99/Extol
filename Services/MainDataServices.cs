@@ -1768,7 +1768,7 @@ namespace Services
                        "Email: " + email + "<br><br>" +
                        "Poruka: <br>" + poruka
             });
-            return "ok";
+            return "okkk";
         }
 
         public async Task<SppODTO> GetDataForSPP(int? categoryId, int? profileId)
