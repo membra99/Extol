@@ -3,6 +3,7 @@ using AutoMapper;
 using Entities.Context;
 using Entities.Universal.MainData;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Index.HPRtree;
@@ -1755,6 +1756,36 @@ namespace Services
             return profilesAndProducts;
         }
 
+        public async Task<string> SendMail(string ime, string prezime, string email, string poruka)
+        {
+            MailService ms = new MailService(_emailSettings);
+            ms.SendEmail(new EmailIDTO
+            {
+                To = "uros14618@its.edu.rs",
+                Subject = "Email from Web Site",
+                Body = "Ime: " + ime +  "<br>" +
+                       "Prezime: " + prezime  + "<br>" +
+                       "Email: " + email + "<br><br>" +
+                       "Poruka: <br>" + poruka
+            });
+            return "ok";
+        }
+
+        public async Task<SppODTO> GetDataForSPP(int? categoryId, int? profileId)
+        {
+            SppODTO productDetails = new();
+            if (categoryId != null)
+            {
+                productDetails = await _context.ProductDetails.Include(x => x.Category).Include(x => x.Media).Where(x => x.CategoryId == categoryId).Select(x => _mapper.Map<SppODTO>(x)).SingleOrDefaultAsync();
+            }
+            else
+            {
+                productDetails = await _context.ProductDetails.Include(x => x.Profile).ThenInclude(x => x.Brand).Include(x => x.Media).Where(x => x.ProfileId == profileId).Select(x => _mapper.Map<SppODTO>(x)).SingleOrDefaultAsync();
+            }
+
+            return productDetails;
+        }
+
         public async Task<List<ProductPageODTO>> GetProductPageCategory()
         {
             List<ProductPageODTO> retval = new();
@@ -1771,7 +1802,7 @@ namespace Services
                     productPageODTO.CategoryId = item.CategoryId;
                     retval.Add(productPageODTO);
                 }
-                else if(item.CategoryId != 12 && item.CategoryId != 19)
+                else if(item.CategoryId != 19)
                 {
                     productPageODTO.ChildCategoryODTOs = new();
                     productPageODTO.CategoryId = item.CategoryId;

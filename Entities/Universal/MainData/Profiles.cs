@@ -21,5 +21,6 @@ namespace Entities.Universal.MainData
 		public Categories? Category { get; set; }
         public Media? Media { get; set; }
         public Materials? Material { get; set; }
+        public ICollection<ProductDetails>? ProductDetails { get; set; }
     }
 }

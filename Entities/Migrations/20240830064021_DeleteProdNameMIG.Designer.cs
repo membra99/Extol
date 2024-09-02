@@ -4,6 +4,7 @@ using Entities.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20240830064021_DeleteProdNameMIG")]
+    partial class DeleteProdNameMIG
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -574,8 +577,8 @@ namespace Entities.Migrations
                     b.Property<string>("Design")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Draft")
-                        .HasColumnType("int");
+                    b.Property<string>("Draft")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("General")
                         .HasColumnType("nvarchar(max)");
@@ -592,8 +595,6 @@ namespace Entities.Migrations
                     b.HasKey("ProductDetailsId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("Draft");
 
                     b.HasIndex("ProfileId");
 
@@ -1133,19 +1134,12 @@ namespace Entities.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Entities.Universal.MainData.Media", "Media")
-                        .WithMany("ProductDetails")
-                        .HasForeignKey("Draft")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Entities.Universal.MainData.Profiles", "Profile")
                         .WithMany("ProductDetails")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Category");
-
-                    b.Navigation("Media");
 
                     b.Navigation("Profile");
                 });
@@ -1348,8 +1342,6 @@ namespace Entities.Migrations
                     b.Navigation("Invoices");
 
                     b.Navigation("OpeningStyles");
-
-                    b.Navigation("ProductDetails");
 
                     b.Navigation("Profiles");
 

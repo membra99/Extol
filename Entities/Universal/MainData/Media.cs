@@ -30,5 +30,6 @@ namespace Entities.Universal.MainData
         public ICollection<OpeningStyle>? OpeningStyles { get; set; }
         public ICollection<CategoryType>? CategoryTypes { get; set; }
         public ICollection<Glazing>? Glazings { get; set; }
+        public ICollection<ProductDetails>? ProductDetails { get; set; }
     }
 }

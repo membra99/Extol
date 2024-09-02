@@ -107,9 +107,14 @@ namespace Entities.Mapping
 
             CreateMap<MaterialColor, MaterialColorODTO>();
 
+            CreateMap<ProductDetails, SppODTO>()
+				.ForMember(dest => dest.ProductName, source => source.MapFrom(m =>
+				    m.Profile != null ? m.Profile.Brand.BrandName + " " + m.Profile.ProfileName : m.Category.CategoryName));
+
             CreateMap<Materials, MaterialODTO>();
 			CreateMap<Categories, FeaturedProducts>()
-				 .ForMember(dest => dest.ImageSrc, source => source.MapFrom(m => m.Media.Src));
+				 .ForMember(dest => dest.ImageSrc, source => source.MapFrom(m => m.Media.Src))
+				 .ForMember(dest => dest.Price, source => source.MapFrom(m => "100"));
 
 
             CreateMap<Profiles, ProfilesODTO>()

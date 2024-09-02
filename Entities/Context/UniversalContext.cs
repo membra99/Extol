@@ -40,6 +40,7 @@ namespace Entities.Context
 		public DbSet<MaterialColor> MaterialColors { get; set; }
 		public DbSet<OpeningStyle> OpeningStyles { get; set; }
 		public DbSet<Glazing> Glazings { get; set; }
+		public DbSet<ProductDetails> ProductDetails { get; set; }
 
 
         #endregion MainDataDataSET
@@ -323,6 +324,23 @@ namespace Entities.Context
                 entity.HasOne(x => x.Media)
                .WithMany(x => x.Glazings)
                .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<ProductDetails>(entity =>
+            {
+                entity.HasKey(x => x.ProductDetailsId);
+
+                entity.HasOne(x => x.Category)
+               .WithMany(x => x.ProductDetails)
+               .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(x => x.Profile)
+              .WithMany(x => x.ProductDetails)
+              .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(x => x.Media)
+              .WithMany(x => x.ProductDetails)
+			  .HasForeignKey(x => x.Draft)
+              .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

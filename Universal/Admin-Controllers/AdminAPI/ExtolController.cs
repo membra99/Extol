@@ -83,6 +83,30 @@ namespace Universal.Admin_Controllers.AdminAPI
             return FilterProduct;
         }
 
+
+        [HttpPost("SendMail")]
+        public async Task<ActionResult<string>> FilterProducts(string ime, string prezime, string email, string poruka)
+        {
+            var mail = await _mainDataServices.SendMail(ime,prezime,email,poruka);
+            if (mail == null)
+            {
+                return NotFound();
+            }
+            return mail;
+        }
+
+
+        [HttpGet("SingleProductPage")]
+        public async Task<ActionResult<SppODTO>> GetDataForSPP(int? categoryId, int? profileId)
+        {
+            var sppData = await _mainDataServices.GetDataForSPP(categoryId, profileId);
+            if (sppData == null)
+            {
+                return NotFound();
+            }
+            return sppData;
+        }
+
         [HttpGet("HomePage")]
         public async Task<ActionResult<HomePageDataODTO>> GetHomePageData()
         {
